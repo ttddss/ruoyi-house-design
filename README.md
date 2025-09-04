@@ -11,6 +11,8 @@
 * 权限认证使用Jwt，支持多终端认证系统。
 * 支持加载动态权限菜单，多方式轻松权限控制。
 * 高效率开发，使用代码生成器可以一键生成前后端代码。
+* 管理端前端代码见：https://github.com/ttddss/ruoyi-house-design-admin-web.git
+* 用户端前端代码见：https://github.com/ttddss/ruoyi-house-design-web.git
 
 ## 内置功能
 
