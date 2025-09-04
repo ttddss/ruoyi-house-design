@@ -1,4 +1,4 @@
-<h4 align="center">大学管理系统</h4>
+<h4 align="center">图纸网后端</h4>
 <p align="center">
 </p>
 
@@ -33,11 +33,18 @@
 17. 在线构建器：拖动表单元素生成相应的HTML代码。
 18. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
 
-## 在线体验
+## 扩展功能
 
+1.图纸相关的接口和页面，分为管理端和用户端
+
+## 在线体验
+演示地址：
+- 管理端：https://admin.113141.xyz/login 
+- 用户端：https://113141.xyz/login
+
+账号密码：
 - admin/admin123
 
-测试环境地址：http://vue.ruoyi.vip  
 若依文档地址：http://doc.ruoyi.vip
 
 
