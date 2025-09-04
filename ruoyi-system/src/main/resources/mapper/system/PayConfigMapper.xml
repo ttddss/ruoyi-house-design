@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PayConfigMapper">
+    
+    <resultMap type="PayConfig" id="PayConfigResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="channel"    column="channel"    />
+        <result property="subChannel"    column="sub_channel"    />
+        <result property="appid"    column="appid"    />
+        <result property="appname"    column="appname"    />
+        <result property="mchid"    column="mchid"    />
+        <result property="aliType"    column="ali_type"    />
+        <result property="wxType"    column="wx_type"    />
+        <result property="publicKey"    column="public_key"    />
+        <result property="privateKey"    column="private_key"    />
+        <result property="appSecret"    column="app_secret"    />
+        <result property="version"    column="version"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="gatewayUrl"    column="gateway_url"    />
+        <result property="serialNum"    column="serial_num"    />
+        <result property="apiKey"    column="api_key"    />
+        <result property="expireTime"    column="expire_time"    />
+        <result property="platCertPath"    column="plat_cert_path"    />
+    </resultMap>
+
+    <sql id="selectPayConfigVo">
+        select id, name, channel, plat_cert_path, sub_channel, expire_time, api_key, serial_num, appid, appname, mchid, ali_type, wx_type, public_key, private_key, app_secret, version, del_flag, remark, create_by, create_time, update_by, update_time, gateway_url from pay_config
+    </sql>
+
+    <select id="selectPayConfigList" parameterType="PayConfig" resultMap="PayConfigResult">
+        <include refid="selectPayConfigVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="channel != null "> and channel = #{channel}</if>
+            <if test="subChannel != null "> and sub_channel = #{subChannel}</if>
+            and del_flag = 0
+        </where>
+    </select>
+    
+
+</mapper>

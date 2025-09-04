@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.member.mapper.VipMapper">
+    
+    <resultMap type="Vip" id="VipResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="status"    column="status"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="iconImageUrl"    column="icon_image_url"    />
+        <result property="color"    column="color"    />
+        <result property="remark"    column="remark"    />
+        <result property="validDays"    column="valid_days"    />
+        <result property="discount"    column="discount"    />
+        <result property="price"        column="price"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectVipVo">
+        select id, name, price, status, image_url, icon_image_url, color, remark, valid_days, discount, order_num, create_by, create_time, update_by, update_time, del_flag from vip
+    </sql>
+
+    <select id="selectVipList" parameterType="Vip" resultMap="VipResult">
+        <include refid="selectVipVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            and del_flag = 0
+        </where>
+        order by order_num
+    </select>
+    
+    <select id="selectUserVip" resultMap="VipResult">
+        select
+            a.id,
+            a.name,
+            a.price,
+            a.status,
+            a.image_url,
+            a.icon_image_url,
+            a.color,
+            a.remark,
+            a.valid_days,
+            a.discount,
+            a.order_num,
+            a.create_by,
+            a.create_time,
+            a.update_by,
+            a.update_time,
+            a.del_flag
+        from vip a join vip_user b on a.id = b.vip_id
+        where b.user_id = #{userId}
+          and a.del_flag = 0
+          and b.del_flag = 0
+          and b.expire_time > now()
+        order by a.discount limit 1
+    </select>
+</mapper>

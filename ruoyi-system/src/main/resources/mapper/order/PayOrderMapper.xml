@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.order.mapper.PayOrderMapper">
+    
+    <resultMap type="PayOrder" id="PayOrderResult">
+        <result property="id"    column="id"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="channel"    column="channel"    />
+        <result property="subChannel"    column="sub_channel"    />
+        <result property="userId"    column="user_id"    />
+        <result property="vipId"    column="vip_id"    />
+        <result property="blueprintsId"    column="blueprints_id"    />
+        <result property="status"    column="status"    />
+        <result property="amount"    column="amount"    />
+        <result property="discountAmount"    column="discount_amount"    />
+        <result property="discount"    column="discount"    />
+        <result property="actualAmount"    column="actual_amount"    />
+        <result property="subject"    column="subject"    />
+        <result property="outerTradeNo"    column="outer_trade_no"    />
+        <result property="appid"    column="appid"    />
+        <result property="mchid"    column="mchid"    />
+        <result property="code"    column="code"    />
+        <result property="message"    column="message"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="goodsType"    column="goods_type"    />
+        <result property="goodsNum"    column="goods_num"    />
+    </resultMap>
+
+    <sql id="selectPayOrderVo">
+        select id, order_no, channel, sub_channel, goods_type, goods_num, user_id, vip_id, blueprints_id, status, amount, discount_amount, discount, actual_amount, subject, outer_trade_no, appid, mchid, code, message, del_flag, remark, create_by, create_time, update_by, update_time from pay_order
+    </sql>
+
+    <select id="selectPayOrderList" parameterType="PayOrder" resultType="com.ruoyi.order.domain.vo.PayOrderListVO">
+        select
+            o.id,
+            o.order_no,
+            o.channel,
+            o.sub_channel,
+            o.goods_type,
+            o.goods_num,
+            o.user_id,
+            o.vip_id,
+            o.blueprints_id,
+            o.status,
+            o.amount,
+            o.discount,
+            o.actual_amount,
+            o.subject,
+            o.outer_trade_no,
+            o.appid,
+            o.mchid,
+            o.code,
+            o.message,
+            o.remark,
+            o.create_by,
+            o.create_time,
+            o.update_by,
+            o.update_time,
+            o.discount_amount,
+            u.phonenumber,
+            u.nick_name,
+            (select count(1) from evaluate e where e.order_no = o.order_no and e.del_flag = 0) as evaluateNum
+        from pay_order o left join sys_user u on o.user_id = u.user_id
+        <where>
+            <if test="orderNo != null  and orderNo != ''"> and o.order_no = #{orderNo}</if>
+            <if test="channel != null "> and o.channel = #{channel}</if>
+            <if test="subChannel != null "> and o.sub_channel = #{subChannel}</if>
+            <if test="phonenumber != null "> and u.phonenumber = #{phonenumber}</if>
+            <if test="userId != null "> and u.user_id = #{userId}</if>
+            <if test="status != null  and status != ''"> and o.status = #{status}</if>
+            <if test="outerTradeNo != null  and outerTradeNo != ''"> and o.outer_trade_no = #{outerTradeNo}</if>
+            <if test="beginCreateTime != null"> and o.create_time >= #{beginCreateTime}</if>
+            <if test="endCreateTime != null"> and o.create_time &lt;= #{endCreateTime}</if>
+            and o.del_flag = 0
+        </where>
+        order by o.id desc
+    </select>
+    
+    <update id="closeOrder">
+        update pay_order set status = 3, update_time = now() where order_no = #{orderNo} and status = 0
+    </update>
+
+    <update id="updateOuterTradeNo">
+        update pay_order set outer_trade_no = #{outTradeNo}, update_time = now() where order_no = #{orderNo}
+    </update>
+
+    <update id="updateFail">
+        update pay_order set status = 4, code = #{code}, message = #{msg}, update_time = now() where order_no = #{orderNo} and status = 0
+    </update>
+
+    <update id="updateCodeAndMsg">
+        update pay_order set code = #{code}, message = #{msg}, update_time = now() where order_no = #{orderNo}
+    </update>
+
+</mapper>

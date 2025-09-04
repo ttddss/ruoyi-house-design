@@ -1,0 +1,157 @@
+package ${packageName}.service.impl;
+
+import java.util.List;
+import java.util.Arrays;
+import cn.hutool.core.util.ArrayUtil;
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime' || $column.javaField == 'updateTime')
+import com.ruoyi.common.utils.DateUtils;
+#break
+#end
+#end
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+#if($table.sub)
+import java.util.ArrayList;
+import com.ruoyi.common.utils.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
+import ${packageName}.domain.${subClassName};
+#end
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.I${ClassName}Service;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.exception.ServiceException;
+import ${packageName}.convert.${ClassName}Convert;
+import org.springframework.transaction.annotation.Transactional;
+
+import ${packageName}.domain.req.Add${ClassName}Req;
+import ${packageName}.domain.req.Edit${ClassName}Req;
+import ${packageName}.domain.req.Query${ClassName}ListReq;
+import ${packageName}.domain.vo.${ClassName}InfoVO;
+import ${packageName}.domain.vo.${ClassName}ListVO;
+import com.ruoyi.common.utils.AssertUtils;
+import com.ruoyi.common.utils.PageUtils;
+
+/**
+ * ${functionName}Service业务层处理
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Service
+public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${ClassName}> implements I${ClassName}Service
+{
+
+    /**
+     * 查询${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}主键
+     * @return ${functionName}
+     */
+    @Override
+    public ${ClassName}InfoVO select${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField})
+    {
+        ${ClassName}InfoVO infoVO = ${ClassName}Convert.INSTANCE.convert(this.getById(id));
+        // todo 其他业务逻辑
+        return infoVO;
+    }
+
+    /**
+     * 查询${functionName}列表
+     * 
+     * @param queryReq ${functionName}
+     * @return ${functionName}
+     */
+    @Override
+    public List<${ClassName}ListVO> select${ClassName}List(Query${ClassName}ListReq queryReq)
+    {
+        List<${ClassName}> ${className}s = getBaseMapper().select${ClassName}List(queryReq);
+        List<${ClassName}ListVO> voList = ${ClassName}Convert.INSTANCE.convert(${className}s);
+        // todo 其他业务逻辑
+        return PageUtils.newPage(${className}s, voList);
+    }
+
+    /**
+     * 新增${functionName}
+     * 
+     * @param addReq ${functionName}
+     * @return 结果
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean insert${ClassName}(Add${ClassName}Req addReq)
+    {
+        ${ClassName} addDo = ${ClassName}Convert.INSTANCE.convert(addReq);
+#if($table.sub)
+        insert${subClassName}(${className});
+#end
+        // todo 其他业务逻辑
+        return this.save(addDo);
+    }
+
+    /**
+     * 修改${functionName}
+     * 
+     * @param editReq ${functionName}
+     * @return 结果
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean update${ClassName}(Edit${ClassName}Req editReq)
+    {
+        ${ClassName} editDo = ${ClassName}Convert.INSTANCE.convert(editReq);
+#if($table.sub)
+        ${className}Mapper.delete${subClassName}By${subTableFkClassName}(${className}.get${pkColumn.capJavaField}());
+        insert${subClassName}(${className});
+#end
+        // todo 其他业务逻辑
+        return this.updateById(editDo);
+    }
+
+    /**
+     * 批量删除${functionName}
+     * 
+     * @param ${pkColumn.javaField}s 需要删除的${functionName}主键
+     * @return 结果
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean delete${ClassName}By${pkColumn.capJavaField}s(${pkColumn.javaType}[] ${pkColumn.javaField}s)
+    {
+        AssertUtils.isTrue(ArrayUtil.isNotEmpty(ids), "参数错误，ids不能为空");
+#if($table.sub)
+        ${className}Mapper.delete${subClassName}By${subTableFkClassName}s(${pkColumn.javaField}s);
+#end
+        // todo 其他业务逻辑
+        return this.removeByIds(Arrays.asList(ids));
+    }
+
+
+#if($table.sub)
+
+    /**
+     * 新增${subTable.functionName}信息
+     * 
+     * @param ${className} ${functionName}对象
+     */
+    public void insert${subClassName}(${ClassName} ${className})
+    {
+        List<${subClassName}> ${subclassName}List = ${className}.get${subClassName}List();
+        ${pkColumn.javaType} ${pkColumn.javaField} = ${className}.get${pkColumn.capJavaField}();
+        if (StringUtils.isNotNull(${subclassName}List))
+        {
+            List<${subClassName}> list = new ArrayList<${subClassName}>();
+            for (${subClassName} ${subclassName} : ${subclassName}List)
+            {
+                ${subclassName}.set${subTableFkClassName}(${pkColumn.javaField});
+                list.add(${subclassName});
+            }
+            if (list.size() > 0)
+            {
+                ${className}Mapper.batch${subClassName}(list);
+            }
+        }
+    }
+#end
+}

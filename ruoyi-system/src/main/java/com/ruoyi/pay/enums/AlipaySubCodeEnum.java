@@ -1,0 +1,75 @@
+package com.ruoyi.pay.enums;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ *
+ *
+ * @author tongdashuai
+ * @version 1.0
+ * @description 支付宝明细返回码
+ * @date 2023/3/17 8:58
+ */
+@Getter
+@AllArgsConstructor
+public enum AlipaySubCodeEnum {
+
+	ACQ_TRADE_NOT_EXIST("ACQ.TRADE_NOT_EXIST", "查询的交易不存在/请求退款的交易被冻结/退分账收入方账户不存在"),
+	ISP_BILL_NOT_EXIST("isp.bill_not_exist", "账单不存在"),
+	ACQ_SELLER_BALANCE_NOT_ENOUGH("ACQ.SELLER_BALANCE_NOT_ENOUGH", "卖家余额不足"),
+	ACQ_REFUND_AMT_NOT_EQUAL_TOTAL("ACQ.REFUND_AMT_NOT_EQUAL_TOTAL", "退款金额超限"),
+	ACQ_REASON_TRADE_BEEN_FREEZEN("ACQ.REASON_TRADE_BEEN_FREEZEN", "请求退款的交易被冻结"),
+	ACQ_TRADE_HAS_FINISHED("ACQ.TRADE_HAS_FINISHED", "交易已完结"),
+	ACQ_TRADE_STATUS_ERROR("ACQ.TRADE_STATUS_ERROR", "交易状态非法"),
+	ACQ_DISCORDANT_REPEAT_REQUEST("ACQ.DISCORDANT_REPEAT_REQUEST", "请求信息不一致"),
+	ACQ_REASON_TRADE_REFUND_FEE_ERR("ACQ.REASON_TRADE_REFUND_FEE_ERR", "退款金额无效"),
+	ACQ_TRADE_NOT_ALLOW_REFUND("ACQ.TRADE_NOT_ALLOW_REFUND", "当前交易不允许退款"),
+	ACQ_REFUND_FEE_ERROR("ACQ.REFUND_FEE_ERROR", "交易退款金额有误"),
+	ACQ_TRADE_HAS_CLOSE("ACQ.TRADE_HAS_CLOSE", "交易已关闭"),
+	ACQ_BUYER_NOT_EXIST("ACQ.BUYER_NOT_EXIST", "买家不存在"),
+	ACQ_BUYER_ENABLE_STATUS_FORBID("ACQ.BUYER_ENABLE_STATUS_FORBID", "买家状态异常"),
+	ACQ_REASON_TRADE_STATUS_INVALID("ACQ.REASON_TRADE_STATUS_INVALID", "交易状态异常"),
+	ACQ_NOT_ALLOW_PARTIAL_REFUND("ACQ.NOT_ALLOW_PARTIAL_REFUND", "不支持部分退款"),
+	ACQ_ONLINE_TRADE_VOUCHER_NOT_ALLOW_REFUND("ACQ.ONLINE_TRADE_VOUCHER_NOT_ALLOW_REFUND", "交易不允许退款"),
+	ACQ_BUYER_ERROR("ACQ.BUYER_ERROR", "买家状态异常"),
+	ACQ_CURRENCY_NOT_SUPPORT("ACQ.CURRENCY_NOT_SUPPORT", "退款币种不支持"),
+	ACQ_ALLOC_AMOUNT_VALIDATE_ERROR("ACQ.ALLOC_AMOUNT_VALIDATE_ERROR", "退分账金额超限"),
+	ACQ_USER_NOT_MATCH_ERR("ACQ.USER_NOT_MATCH_ERR", "交易用户不匹配"),
+	ACQ_TRADE_SETTLE_ERROR("ACQ.TRADE_SETTLE_ERROR", "交易结算异常"),
+	ACQ_REFUND_CHARGE_ERROR("ACQ.REFUND_CHARGE_ERROR", "退收费异常"),
+	ACQ_ENTERPRISE_PAY_BIZ_ERROR("ACQ.ENTERPRISE_PAY_BIZ_ERROR", "因公付业务异常"),
+	ACQ_OVERDRAFT_ASSIGN_ACCOUNT_INVALID("ACQ.OVERDRAFT_ASSIGN_ACCOUNT_INVALID", "垫资退款出资账号和商户信息不一致"),
+	ACQ_OVERDRAFT_AGREEMENT_NOT_MATCH("ACQ.OVERDRAFT_AGREEMENT_NOT_MATCH", "垫资退款接口传入模式和签约配置不一致"),
+	ACQ_REFUND_ACCOUNT_NOT_EXIST("ACQ.REFUND_ACCOUNT_NOT_EXIST", "退款出资账号不存在或账号异常"),
+	ACQ_CUSTOMER_VALIDATE_ERROR("ACQ.CUSTOMER_VALIDATE_ERROR", "账户已注销或者被冻结"),
+	ACQ_REFUND_ROYALTY_PAYEE_ACCOUNT_NOT_EXIST("ACQ.REFUND_ROYALTY_PAYEE_ACCOUNT_NOT_EXIST", "退分账收入方账户不存在"),
+	TRADE_NOT_EXIST("TRADE_NOT_EXIST", "查询退款的交易不存在"),
+	;
+
+	private String code;
+	private String name;
+
+
+	private static final Map<String, AlipaySubCodeEnum> CACHE_MAP = new HashMap<>();
+
+
+
+
+	static {
+		for (AlipaySubCodeEnum item : values()) {
+			CACHE_MAP.put(item.getCode(), item);
+		}
+	}
+
+	public static AlipaySubCodeEnum valueCodeOf(String code) {
+		return CACHE_MAP.get(code);
+	}
+
+
+
+}

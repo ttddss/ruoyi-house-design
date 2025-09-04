@@ -1,0 +1,36 @@
+package ${packageName}.convert;
+
+
+import ${packageName}.domain.${ClassName};
+import ${packageName}.domain.req.Add${ClassName}Req;
+import ${packageName}.domain.req.Edit${ClassName}Req;
+import ${packageName}.domain.req.Query${ClassName}ListReq;
+import ${packageName}.domain.vo.${ClassName}InfoVO;
+import ${packageName}.domain.vo.${ClassName}ListVO;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+
+/**
+ * ${functionName}bean转换器
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Mapper
+public interface ${ClassName}Convert
+{
+    ${ClassName}Convert INSTANCE = Mappers.getMapper(${ClassName}Convert.class);
+
+    ${ClassName} convert(Query${ClassName}ListReq queryReq);
+
+    List<${ClassName}ListVO> convert(List<${ClassName}> list);
+
+    ${ClassName}InfoVO convert(${ClassName} ${className});
+
+    ${ClassName} convert(Add${ClassName}Req ${className});
+
+    ${ClassName} convert(Edit${ClassName}Req ${className}Req);
+
+}

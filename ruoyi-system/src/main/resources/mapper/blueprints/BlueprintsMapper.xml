@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.blueprints.mapper.BlueprintsMapper">
+    
+    <resultMap type="Blueprints" id="BlueprintsResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="name"    column="name"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="price"    column="price"    />
+        <result property="minConstructionCost"    column="min_construction_cost"    />
+        <result property="maxConstructionCost"    column="max_construction_cost"    />
+        <result property="minBuildableSize"    column="min_buildable_size"    />
+        <result property="maxBuildableSize"    column="max_buildable_size"    />
+        <result property="baySize"    column="bay_size"    />
+        <result property="depthSize"    column="depth_size"    />
+        <result property="houseType"    column="house_type"    />
+        <result property="bayType"    column="bay_type"    />
+        <result property="style"    column="style"    />
+        <result property="bedroomSize"    column="bedroom_size"    />
+        <result property="parlourSize"    column="parlour_size"    />
+        <result property="toiletSize"    column="toilet_size"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="listingStatus"    column="listing_status"    />
+        <result property="viewNum"    column="view_num"    />
+        <result property="collectNum"    column="collect_num"    />
+        <result property="saleNum"    column="sale_num"    />
+    </resultMap>
+
+    <sql id="selectBlueprintsVo">
+        select id, code, name, image_url, sale_num, price, min_construction_cost, max_construction_cost, min_buildable_size, max_buildable_size, bay_size, depth_size, house_type, bay_type, style, bedroom_size, parlour_size, toilet_size, del_flag, remark, create_by, create_time, update_by, update_time, user_id, listing_status, view_num, collect_num from blueprints
+    </sql>
+
+    <select id="selectBlueprintsById" resultType="com.ruoyi.blueprints.domain.vo.BlueprintsInfoVO">
+        select
+            a.id,
+            a.code,
+            a.name,
+            a.price,
+            a.min_construction_cost,
+            a.max_construction_cost,
+            a.min_buildable_size,
+            a.max_buildable_size,
+            a.bay_size,
+            a.depth_size,
+            a.house_type,
+            a.bay_type,
+            a.style,
+            a.bedroom_size,
+            a.parlour_size,
+            a.toilet_size,
+            a.user_id,
+            a.listing_status,
+            a.image_url,
+            a.create_by,
+            a.create_time,
+            a.view_num,
+            a.collect_num,
+            a.sale_num,
+            b.introduction,
+            b.file_url,
+            b.preview_image_url,
+            b.introduction_image_url
+        from blueprints a
+            join blueprints_detail b on a.id = b.blueprints_id
+        where a.id = #{id}
+          and a.del_flag = 0
+          and b.del_flag = 0
+    </select>
+
+    <select id="selectBlueprintsList" parameterType="com.ruoyi.blueprints.domain.req.QueryBlueprintsListReq" resultType="com.ruoyi.blueprints.domain.vo.BlueprintsListVO">
+        select
+            a.id,
+            a.code,
+            a.name,
+            a.price,
+            a.min_construction_cost,
+            a.max_construction_cost,
+            a.min_buildable_size,
+            a.max_buildable_size,
+            a.bay_size,
+            a.depth_size,
+            a.house_type,
+            a.bay_type,
+            a.style,
+            a.bedroom_size,
+            a.parlour_size,
+            a.toilet_size,
+            a.del_flag,
+            a.remark,
+            a.create_by,
+            a.create_time,
+            a.update_by,
+            a.update_time,
+            a.user_id,
+            a.listing_status,
+            a.image_url,
+            a.view_num,
+            a.collect_num,
+            a.sale_num
+        from blueprints a
+        <if test="collectUserId != null">
+            join blueprints_collect b on a.id = b.blueprints_id
+        </if>
+        <where>
+            <if test="collectUserId != null">
+                and b.user_id = #{collectUserId} and b.del_flag = 0
+            </if>
+            <if test="code != null  and code != ''"> and a.code like concat('%', #{code}, '%')</if>
+            <if test="name != null  and name != ''"> and a.name like concat('%', #{name}, '%')</if>
+            <if test="beginPrice != null"> and a.price >= #{beginPrice}</if>
+            <if test="endPrice != null"> and a.price &lt;= #{endPrice}</if>
+            <if test="houseType != null "> and a.house_type = #{houseType}</if>
+            <if test="bayType != null "> and a.bay_type = #{bayType}</if>
+            <if test="blueprintsStyle != null "> and a.style = #{blueprintsStyle}</if>
+            <if test="beginCreateTime != null"> and a.create_time >= #{beginCreateTime}</if>
+            <if test="endCreateTime != null"> and a.create_time &lt;= #{endCreateTime}</if>
+            <if test="userId != null "> and a.user_id = #{userId}</if>
+            <if test="listingStatus != null "> and a.listing_status = #{listingStatus}</if>
+            and a.del_flag = 0
+            <if test="orderWay != null">
+                <choose>
+                    <when test="orderWay == 0">
+                        order by a.id desc
+                    </when>
+                    <when test="orderWay == 1">
+                        order by a.price, a.id desc
+                    </when>
+                    <when test="orderWay == 2">
+                        order by a.price desc, a.id desc
+                    </when>
+                    <when test="orderWay == 3">
+                        order by a.sale_num , a.id desc
+                    </when>
+                    <when test="orderWay == 4">
+                        order by a.sale_num desc, a.id desc
+                    </when>
+                    <otherwise>
+                        order by a.id desc
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="orderWay == null">
+                order by a.id desc
+            </if>
+        </where>
+    </select>
+    
+    <update id="updateBlueprintsById">
+        update blueprints set
+            name = #{name},
+            image_url = #{imageUrl},
+            price = #{price},
+            min_construction_cost = #{minConstructionCost},
+            max_construction_cost = #{maxConstructionCost},
+            min_buildable_size = #{minBuildableSize},
+            max_buildable_size = #{maxBuildableSize},
+            bay_size = #{baySize},
+            depth_size = #{depthSize},
+            house_type = #{houseType},
+            bay_type = #{bayType},
+            style = #{style},
+            bedroom_size = #{bedroomSize},
+            parlour_size = #{parlourSize},
+            toilet_size = #{toiletSize},
+            update_by = #{updateBy},
+            update_time = sysdate()
+        where id = #{id} and  del_flag = 0
+    </update>
+
+    <update id="updateViewNum">
+        update blueprints set
+            view_num = view_num + 1,
+            update_time = sysdate()
+        where id = #{id}
+    </update>
+
+    <update id="updateCollectNum">
+        update blueprints set
+          collect_num = collect_num + #{num},
+          update_time = sysdate()
+        where id = #{id}
+    </update>
+
+    <update id="updateSaleNum">
+        update blueprints set
+          sale_num = sale_num + #{num},
+          update_time = sysdate()
+        where id = #{id}
+    </update>
+
+</mapper>

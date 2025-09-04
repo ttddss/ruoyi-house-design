@@ -1,0 +1,64 @@
+package ${packageName}.domain;
+
+#foreach ($import in $importList)
+import ${import};
+#end
+#if($table.crud || $table.sub)
+#elseif($table.tree)
+import com.ruoyi.common.core.domain.TreeEntity;
+#end
+import lombok.Data;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.NoArgsConstructor;
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * ${functionName}对象 ${tableName}
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+#if($table.crud || $table.sub)
+#set($Entity="BaseEntity")
+#elseif($table.tree)
+#set($Entity="TreeEntity")
+#end
+@TableName("${tableName}")
+@Data
+@NoArgsConstructor
+public class ${ClassName} implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+    /** $column.columnComment */
+#if($column.list)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#end
+#if($column.columnName == $pkColumn.columnName)
+    @TableId(type = IdType.AUTO)
+#end
+#if($column.javaField == 'createTime')
+    @TableField(fill = FieldFill.INSERT)
+#end
+#if($column.javaField == 'updateTime')
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+#end
+    private $column.javaType $column.javaField;
+
+#end
+#if($table.sub)
+    /** $table.subTable.functionName信息 */
+    private List<${subClassName}> ${subclassName}List;
+
+#end
+
+
+
+}

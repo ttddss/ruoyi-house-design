@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MqMsgMapper">
+
+    <resultMap type="MqMsg" id="MqMsgResult">
+        <result property="id"    column="id"    />
+        <result property="bizId"    column="biz_id"    />
+        <result property="bizType"    column="biz_type"    />
+        <result property="exchangeName"    column="exchange_name"    />
+        <result property="routeKey"    column="route_key"    />
+        <result property="times"    column="times"    />
+        <result property="isDelay"    column="is_delay"    />
+        <result property="repushTime"    column="repush_time"    />
+        <result property="msg"    column="msg"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMqMsgVo">
+        select id, biz_id, biz_type, exchange_name, route_key, times, is_delay, repush_time, msg, create_by, create_time, update_by, update_time from mq_msg
+    </sql>
+
+    <insert id="bak">
+        insert into mq_msg_bak(id, biz_id, biz_type, exchange_name, route_key, times, is_delay, repush_time, msg, create_by, create_time, update_by, update_time)
+        select id, biz_id, biz_type, exchange_name, route_key, times, is_delay, repush_time, msg, create_by, create_time, update_by, update_time
+        from mq_msg
+        where id = #{id}
+    </insert>
+
+    <update id="updateRepush">
+        update mq_msg
+        set
+            update_time = now(),
+            times = times + 1,
+            repush_time = #{repushTime}
+        where id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,60 @@
+package ${packageName}.service;
+
+import java.util.List;
+import ${packageName}.domain.${ClassName};
+import com.baomidou.mybatisplus.extension.service.IService;
+import ${packageName}.domain.req.Add${ClassName}Req;
+import ${packageName}.domain.req.Edit${ClassName}Req;
+import ${packageName}.domain.req.Query${ClassName}ListReq;
+import ${packageName}.domain.vo.${ClassName}InfoVO;
+import ${packageName}.domain.vo.${ClassName}ListVO;
+
+/**
+ * ${functionName}Service接口
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface I${ClassName}Service extends IService<${ClassName}>
+{
+    /**
+     * 查询${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}主键
+     * @return ${functionName}
+     */
+    ${ClassName}InfoVO select${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField});
+
+    /**
+     * 查询${functionName}列表
+     * 
+     * @param queryReq ${functionName}
+     * @return ${functionName}集合
+     */
+    List<${ClassName}ListVO> select${ClassName}List(Query${ClassName}ListReq queryReq);
+
+    /**
+     * 新增${functionName}
+     * 
+     * @param addReq ${functionName}
+     * @return 结果
+     */
+    boolean insert${ClassName}(Add${ClassName}Req addReq);
+
+    /**
+     * 修改${functionName}
+     * 
+     * @param editReq ${functionName}
+     * @return 结果
+     */
+    boolean update${ClassName}(Edit${ClassName}Req editReq);
+
+    /**
+     * 批量删除${functionName}
+     * 
+     * @param ${pkColumn.javaField}s 需要删除的${functionName}主键集合
+     * @return 结果
+     */
+    boolean delete${ClassName}By${pkColumn.capJavaField}s(${pkColumn.javaType}[] ${pkColumn.javaField}s);
+
+}
