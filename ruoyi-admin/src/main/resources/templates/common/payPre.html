@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>聚合扫码付</title>
+    <style>
+        body{
+            margin-left: 30px;
+        }
+        #top{
+            width: 500px;
+            overflow: auto;
+            margin-top: 30px;
+            margin-bottom: 70px;
+        }
+        #logo{
+            float: left;
+            height: 150px;
+            margin-left: 20px;
+        }
+        #top-right{
+            float: left;
+            margin-left: 30px;
+            padding-top: 20px;
+        }
+        #pay-msg{
+            line-height: 50px;
+            font-size: 40px;
+        }
+        #company-name{
+            font-size: 40px;
+            line-height: 100px;
+            font-weight: bold;
+        }
+        #pay-tip{
+            font-size: 40px;
+            margin-left: 20px;
+            color: #919191;
+        }
+        #payBtn{
+            display: block;
+            border-radius: 10px;
+            width: 100%;
+            height: 150px;
+            color: white;
+            background-color: orange;
+            border: none;
+            font-size: 50px;
+            font-weight: bold;
+        }
+        #amount-left{
+            font-size: 60px;
+            height: 150px;
+            line-height: 150px;
+            margin-bottom: 50px;
+        }
+        #amount{
+            display: inline-block;
+            width: 90%;
+            height: 150px;
+            font-size: 60px;
+            margin-bottom: 50px;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-color: #EDEDED;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<script th:src="${homeUrl}+'/js/jquery-3.3.1.min.js'" ></script>
+<script th:src="${homeUrl}+'/js/vconsole.min.js'" ></script>
+<script>
+    // var vConsole = new VConsole();
+</script>
+<script>
+
+    var homeUrl = '[[${homeUrl}]]';
+    var qrLinkId = '[[${qrLinkId}]]';
+
+    // 确认支付
+    function confirmPay() {
+        var amount = $('#amount').val();
+        // 跳转支付链接
+        window.location.href = `${homeUrl}/page/common/pay?amount=${amount}&qrLinkId=${qrLinkId}`;
+    }
+
+    // key不为空，则是聚合支付动态二维码立即支付
+    if ('[[${qrLinkId}]]' != '') {
+        // 跳转支付链接
+        window.location.href = `${homeUrl}/page/pay/pay?qrLinkId=${qrLinkId}`;
+    }
+
+    $(function (){
+        $('#amount').focus();
+    })
+</script>
+<body>
+    <div id="top">
+        <img id="logo" th:src="${homeUrl}+'/images/logo.png'">
+        <div id="top-right">
+            <span id="pay-msg">付款给</span><br>
+            <span id="name"  th:text="'商户'" ></span>
+        </div>
+    </div>
+    <div>
+<!--        <span id="pay-tip">付款金额</span><br>-->
+<!--        <label id="amount-left">￥</label><input id="amount" type="number" th:value="${payinfo?.amount}" />-->
+    </div><br>
+    <button id="payBtn" onclick="confirmPay();">确认支付</button>
+</body>
+</html>

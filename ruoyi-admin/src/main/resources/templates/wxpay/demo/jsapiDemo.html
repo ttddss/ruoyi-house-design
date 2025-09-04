@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>获取openid测试页</title>
+</head>
+<body>
+
+
+</body>
+<script th:src="${homeUrl}+'/js/jquery-3.3.1.min.js'" ></script>
+<script th:src="${homeUrl}+'/js/vconsole.min.js'"></script>
+<script type="text/javascript" >
+    // jsapi获取openid的几种方式：https://pay.weixin.qq.com/wiki/doc/apiv3_partner/terms_definition/chapter1_1_3.shtml#part-3
+    // jsapi网页授权：https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
+    var vConsole = new VConsole();
+    $(function(){
+        // // localStorage.setItem('expireSignTime', res.data.expireTime);
+        // var appid = $('#subAppid').val() ? $('#subAppid').val() : $('#appid').val();
+        // // 如果没有授权获取过openid，那么需要重新授权下
+        // if (!localStorage.getItem(appid + ':openid')) {
+        //     window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appid +
+        //         "&redirect_uri=" + encodeURIComponent("https://22c39r8958.imdo.co/jsapiRedirect.html") +
+        //         "&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+        // } else {
+        //
+        // }
+        let homeUrl = '[[${homeUrl}]]';
+        let appId = '[[${appid}]]';
+        window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appId +
+            "&redirect_uri=" + encodeURIComponent(homeUrl + "/page/wxpay/demo/jsapiRedirect?appid=" + appId) +
+            "&response_type=code&scope=snsapi_base&state=#wechat_redirect";
+    })
+</script>
+</html>

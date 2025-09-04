@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付</title>
+    <script>
+        var html = document.documentElement || document.body;
+        var hW = html.getBoundingClientRect().width;
+        html.style.fontSize = hW / 7.5 + 'px';
+    </script>
+</head>
+
+<body>
+<div>
+    <form id="submitForm" name="submitForm" method="post" th:action="${url}">
+        <input type="hidden" id="packet" name="packet" th:value="${packet}"/>
+        <input id="buttonSubmit" style="display: none" type="submit" value="支付">
+    </form>
+</div>
+</body>
+
+</html>
+
+<script src="../../js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+$(function(){
+    $('#buttonSubmit').trigger("click");
+})
+</script>

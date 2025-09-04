@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>支付宝手机网站支付测试页</title>
+</head>
+<body>
+
+    应用id：<input th:id="appid" type="text" value="2021003180604194"/><br>
+    子应用id：<input id="subAppid" type="text" value="2021003183676575"/><br>
+    接口appid:<input id="inAppid" type="text" value="sms-test"/><br>
+    res:<span id="res"></span><br>
+    提示信息：<span id="tips"></span><br>
+    金额：<input id="amount" type="text" value="0.01"/><br>
+    订单号：<input id="orderNo" type="text" value="0000143"/><br>
+    <button onclick="sendWapPay()">发起手机网站支付</button>
+</body>
+<script th:src="${homeUrl}+'/js/jquery-3.3.1.min.js'" ></script>
+<script th:src="${homeUrl}+'/js/vconsole.min.js'" ></script>
+<!--<script src="../js/jweixin-1.6.0.js"></script>-->
+
+<script type="text/javascript">
+    var vConsole = new VConsole();
+    var homeUrl = '[[${homeUrl}]]';
+
+
+
+    // 发送jsapi支付请求
+    function sendWapPay(){
+        var req = {
+            aliAppid: $('#appid').val(),
+            subAppid: $('#subAppid').val(),
+            orderNo:  $("#orderNo").val(),
+            buyer: "tds",
+            amount: $("#amount").val(),
+            subject: "测试",
+            description: "这是一段订单描述",
+            notifyUrl: homeUrl + "/api/test/alipay/notifyUrl",
+            returnUrl: homeUrl + "/success.html",
+            quitUrl: homeUrl + "/quit.html",
+            appId: $('#inAppid').val(),
+            timestamp: 0,
+            nonceStr: "",
+            sign: ""
+        };
+
+
+        $.ajax({
+            type: 'POST',
+            url: homeUrl + '/api/alipay/wapPay',
+            data: JSON.stringify(req),
+            dataType: "json",
+            contentType: 'application/json',
+            success: function (res) {
+                $("#res").html("调用手机网站支付结果：" + JSON.stringify(res));
+                window.location.href = res.data.payUrl;
+            }
+
+
+
+        })
+    }
+
+
+
+</script>
+</html>

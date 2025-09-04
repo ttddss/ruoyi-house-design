@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>获取openid并支付测试页</title>
+</head>
+<body>
+
+    公众号id：<input th:id="appid" type="text" th:value="${appid}"/><br>
+    商户号：<input id="mchid" type="text" value="1640520530"/><br>
+    子商户公众号：<input id="subAppid" type="text" th:value="${appid}"/><br>
+    子商户号：<input id="subMchid" type="text" value="1640678854"/><br>
+
+    code:<span id="code" th:text="${code}"></span><br>
+    state:<span id="state" th:text="${state}"></span><br>
+    openid:<span id="openid"></span><br>sms-test
+    接口appid:<input id="inAppid" type="text" value="sms-test"/><br>
+    res:<span id="res"></span><br>
+    提示信息：<span id="tips"></span><br>
+    金额：<input id="amount" type="text" value="0.01"/><br>
+    订单号：<input id="orderNo" type="text" value="000030"/><br>
+    <button onclick="sendJsapiPay()">发起jsapi支付</button>
+</body>
+<script th:src="${homeUrl}+'/js/jquery-3.3.1.min.js'" ></script>
+<script th:src="${homeUrl}+'/js/vconsole.min.js'" ></script>
+<!--<script src="../js/jweixin-1.6.0.js"></script>-->
+
+<script type="text/javascript">
+    // var vConsole = new VConsole();
+    // 获取请求url后面的所有参数。（来源于：https://www.jianshu.com/p/5275c4bd5fda）
+    // function getQueryString() {
+    //     var qs = location.search.substr(1), // 获取url中"?"符后的字串
+    //         args = {}, // 保存参数数据的对象
+    //         items = qs.length ? qs.split("&") : [], // 取得每一个参数项
+    //         item = null,
+    //         len = items.length;
+    //     for(var i = 0; i < len; i++) {
+    //         item = items[i].split("=");
+    //         var name = decodeURIComponent(item[0]),
+    //             value = decodeURIComponent(item[1]);
+    //         if(name) {
+    //             args[name] = value;
+    //         }
+    //     }
+    //     return args;
+    // }
+
+    var homeUrl = '[[${homeUrl}]]';
+    var appId = '[[${appid}]]';
+    var code = '[[${code}]]';
+    var state = '[[${state}]]';
+
+
+    // 发送jsapi支付请求
+    function sendJsapiPay(){
+        var req = {
+            wxAppid: $('#appid').val(),
+            mchid: $('#mchid').val(),
+            subAppid: $('#subAppid').val(),
+            subMchid: $('#subMchid').val(),
+            orderNo:  $("#orderNo").val(),
+            buyer: "tds",
+            amount: $("#amount").val(),
+            subject: "测试",
+            description: "这是一段订单描述",
+            notifyUrl: homeUrl + "/api/test/wxpay/notifyUrl",
+            openid: $("#openid").html(),
+            appId: $('#inAppid').val(),
+            timestamp: 0,
+            nonceStr: "",
+            sign: ""
+        };
+        $.ajax({
+            type: 'POST',
+            url: homeUrl + '/api/wxpay/jsapi',
+            // url: 'https://22c39r8958.imdo.co/api/wxpay/jsapiPay',
+            data: JSON.stringify(req),
+            dataType: "json",
+            contentType: 'application/json',
+            success: function (res) {
+                $("#res").html("调用jsapi下单结果：" + JSON.stringify(res));
+                // wx.chooseWXPay({
+                //     timestamp: res.data.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                //     nonceStr: res.data.nonceStr, // 支付签名随机串，不长于 32 位
+                //     package: res.data.packageVal, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                //     signType: res.data.signType, // 微信支付V3的传入RSA,微信支付V2的传入格式与V2统一下单的签名格式保持一致
+                //     paySign: res.data.paySign, // 支付签名
+                //     success: function (res) {
+                //         // 支付成功后的回调函数
+                //         $("#res").html(JSON.stringify(res));
+                //     }
+
+                // });
+
+                // 发起微信支付
+                if (typeof WeixinJSBridge == "undefined"){
+                    if( document.addEventListener ){
+                        document.addEventListener('WeixinJSBridgeReady', function(){
+                                callPay(res.data);
+                        }, false);
+                    } else if (document.attachEvent){
+                        document.attachEvent('WeixinJSBridgeReady', function(){
+                            callPay(res.data);
+                        });
+                    }
+                } else {
+                    callPay(res.data);
+                }
+            }
+
+
+
+        })
+    }
+
+    // 发起微信支付
+    function callPay(params) {
+        console.log(JSON.stringify(params));
+        // 调用微信支付
+        WeixinJSBridge.invoke('getBrandWCPayRequest', {
+                "appId": appId,        //公众号ID，由商户传入
+                "timeStamp": params.timestamp,        //时间戳，自1970年以来的秒数
+                "nonceStr": params.nonceStr,       //随机串
+                "package": params.packageVal,
+                "signType": params.signType,       //微信签名方式：
+                "paySign": params.paySign //微信签名
+            },
+            function(res) {
+                $("#res").html("调用微信支付结果：" + JSON.stringify(res));
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                    // 使用以上方式判断前端返回,微信团队郑重提示：
+                    //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                    setTimeout(function(){
+                        window.location.href = homeUrl + "/wxpay/demo/jsapiSuccess";
+                    },1000)
+                }
+            }
+        );
+    }
+
+
+
+    // redirect_uri/?code=CODE&state=STATE。
+    $(function(){
+        // 获取url参数
+        // var args = getQueryString();
+        // $("#code").html(args['code']);
+        // $("#state").html(args['state']);
+
+
+        // 获取公众号授权信息
+        var reqData = {
+            wxAppid: appId,
+            code: code
+        };
+        $.ajax({
+            type: 'POST',
+            // url: 'https://22c39r8958.imdo.co/api/wxpay/getAuthInfo',
+            url: homeUrl + '/api/wxpay/getAuthInfo',
+            data: JSON.stringify(reqData),
+            dataType: "json",
+            contentType: 'application/json',
+            success: function (res) {
+                $("#res").html(JSON.stringify(res));
+                $("#openid").html(res.data.openid);
+            }
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" charset="UTF-8" src="https://wx.gtimg.com/pay_h5/goldplan/js/jgoldplan-1.0.0.js"></script>
+    <script th:src="${homeUrl}+'/js/vconsole.min.js'" ></script>
+    <script th:src="${homeUrl}+'/js/jquery-3.3.1.min.js'" ></script>
+    <script>
+        // var vConsole = new VConsole();
+    </script>
+    <script type="text/javascript">
+        var homeUrl = '[[${homeUrl}]]';
+        var appId = '[[${appid}]]';
+        var returnUrl = '[[${payOrder?.returnUrl}]]';
+        var orderNo = '[[${payOrder?.orderNo}]]';
+        var amount = '[[${payOrder?.amount}]]';
+        // 响应事件，展示商家小票
+        window.onload=function () {
+            let mchData ={action:'onIframeReady',displayStyle:'SHOW_CUSTOM_PAGE'}
+            let postData = JSON. stringify(mchData)
+            parent.postMessage(postData,'https://payapp.weixin.qq.com')
+            if (!returnUrl) {
+                $('#returnMer').hide();
+            }
+            if (!orderNo) {
+                $('#orderNoTr').hide();
+            }
+            if (!amount) {
+                $('#orderAmountTr').hide();
+                $('#hr').hide();
+            }
+        }
+
+        // 返回商家页面
+        function returnMerchantPage() {
+            let mchData ={action:'jumpOut', jumpOutUrl:returnUrl}
+            let postData = JSON. stringify(mchData)
+            parent.postMessage(postData,'https://payapp.weixin.qq.com')
+        }
+
+    </script>
+    <style>
+        #logo{
+            display: block;
+            background-color: red;
+            margin: 0 auto;
+            margin-bottom: 0px;
+        }
+        #companyName{
+            /*color: #b8c734;*/
+            text-align: center;
+            /*background-color: #0dbebd;*/
+        }
+        .center{
+            text-align: center;
+            margin: 0 auto;
+        }
+        .red{
+            color: red;
+        }
+        .gray{
+            color: #B5B5B5;
+        }
+        table{
+            font-size: 14px;
+            /*font-size: 30px;*/
+        }
+        #returnMer{
+            color: #0dbebd;
+        }
+        hr{
+            border: none;
+            height: 1px;
+            background-color: #E1E1E1;
+        }
+
+    </style>
+</head>
+<body>
+<img id="logo" th:src="${homeUrl}+'/images/logo.png'">
+<h5 id="companyName" th:text="${company?.name}"></h5>
+<table width="100%">
+    <tr>
+        <td width="30%" class="gray">订单状态</td>
+        <td align="right">支付成功</td>
+    </tr>
+    <tr id="orderNoTr">
+        <td width="30%" class="gray">订单号</td>
+        <td align="right" th:text="${payOrder?.orderNo}"></td>
+    </tr>
+</table>
+<hr id="hr">
+<table width="100%" >
+    <tr id="orderAmountTr">
+        <td  width="30%" class="gray">支付总额</td>
+        <td align="right" class="red" th:text="'￥'+${payOrder?.amount}">0</td>
+    </tr>
+</table>
+<br>
+<br>
+<p class="center">
+    <a id="returnMer"  onclick="returnMerchantPage()">返回商家页面</a>
+</p>
+</body>
+</html>
+
+

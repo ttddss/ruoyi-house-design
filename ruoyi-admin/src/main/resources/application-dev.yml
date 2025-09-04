@@ -1,0 +1,262 @@
+# 开发环境配置
+server:
+    # 服务器的HTTP端口，默认为8080
+    port: 8082
+#    port: 8080
+    servlet:
+        # 应用的访问路径
+        context-path: /
+    tomcat:
+        # tomcat的URI编码
+        uri-encoding: UTF-8
+        # 连接数满后的排队数，默认为100
+        accept-count: 5
+#        max-connections: 5
+        threads:
+            # tomcat最大线程数，默认为200
+            max: 5
+            # Tomcat启动初始化的线程数，默认值10
+            min-spare: 3
+
+# 数据源配置
+spring:
+    # 文件上传
+    servlet:
+        multipart:
+            # 单个文件大小
+            max-file-size: 2048MB
+            # 设置总上传的文件大小
+            max-request-size: 2048MB
+    # 服务模块
+    devtools:
+        restart:
+            # 热部署开关
+            enabled: false
+    # redis 配置
+    redis:
+        database: 9
+        host: 43.138.40.139
+        port: 6379
+        password: 123456
+        # 连接超时时间
+        timeout: 10s
+        lettuce:
+            pool:
+                # 连接池中的最小空闲连接
+                min-idle: 0
+                # 连接池中的最大空闲连接
+                max-idle: 8
+                # 连接池的最大数据库连接数
+                max-active: 8
+                # #连接池最大阻塞等待时间（使用负值表示没有限制）
+                max-wait: -1ms
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        druid:
+            # 主库数据源
+            master:
+                url: jdbc:mysql://43.138.40.139:3309/ry-house-design?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                username: tds
+                password: 123456
+            # 从库数据源
+            slave:
+                # 从数据源开关/默认关闭
+                enabled: false
+                url: 
+                username: 
+                password: 
+            # 初始连接数
+            initialSize: 5
+            # 最小连接池数量
+            minIdle: 10
+            # 最大连接池数量
+            maxActive: 20
+            # 配置获取连接等待超时的时间
+            maxWait: 60000
+            # 配置连接超时时间
+            connectTimeout: 30000
+            # 配置网络超时时间
+            socketTimeout: 60000
+            # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+            timeBetweenEvictionRunsMillis: 60000
+            # 配置一个连接在池中最小生存的时间，单位是毫秒
+            minEvictableIdleTimeMillis: 300000
+            # 配置一个连接在池中最大生存的时间，单位是毫秒
+            maxEvictableIdleTimeMillis: 900000
+            # 配置检测连接是否有效
+            validationQuery: SELECT 1 FROM DUAL
+            testWhileIdle: true
+            testOnBorrow: false
+            testOnReturn: false
+            webStatFilter: 
+                enabled: true
+            statViewServlet:
+                enabled: true
+                # 设置白名单，不填则允许所有访问
+                allow:
+                url-pattern: /druid/*
+                # 控制台管理用户名和密码
+                login-username: ruoyi
+                login-password: 123456
+            filter:
+                stat:
+                    enabled: true
+                    # 慢SQL记录
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: true
+                wall:
+                    config:
+                        multi-statement-allow: true
+    # rabbitmq 配置
+    rabbitmq:
+        host: 43.138.40.139
+        port: 5673
+        username: guest
+        password: guest
+        virtual-host: /
+        # 消息确认机制。消息到达交换机后会回调发送者。可以设置为 none, simple, correlated。correlated 表示发布确认会关联消息 ID。
+        publisher-confirm-type: correlated
+        # 启用消息返回，当消息无法被任何队列接收时，将消息返回给生产者。
+        publisher-returns: true
+        listener:
+            simple:
+                # 消费者确认模式，可以设置为 auto (自动确认) 或 manual (手动确认)。
+                acknowledge-mode: manual
+        template:
+            # 消息发送到队列失败，是否需要回调
+            mandatory: true
+# 项目相关配置
+ruoyi:
+    # 名称
+    name: RuoYi
+    # 版本
+    version: 1.0.0
+    # 版权年份
+    copyrightYear: 2023
+    # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
+    profile: D:/ruoyi/uploadPath
+    # 获取ip地址开关
+    addressEnabled: false
+    # 验证码类型 math 数字计算 char 字符验证
+    captchaType: math
+    # 服务访问根路径
+    homeUrl: http://43.138.40.139:9091
+
+# 日志配置
+logging:
+    level:
+        com.ruoyi: debug
+        org.mybatis: debug
+        org.springframework: warn
+    file:
+        path: D:/myprojects/${spring.application.name}/logs/
+
+# 用户配置
+user:
+    password:
+        # 密码最大错误次数
+        maxRetryCount: 5
+        # 密码锁定时间（默认10分钟）
+        lockTime: 10
+
+# Swagger配置
+swagger:
+    # 是否开启swagger
+    enabled: true
+    # 请求前缀
+    pathMapping: /dev-api
+
+# token配置
+token:
+    # 令牌自定义标识
+    header: Authorization
+    # 令牌密钥
+    secret: abcdefghijklmnopqrstuvwxyz
+    # 令牌有效期（默认240分钟）
+    expireTime: 240
+
+
+# rabbitMq相关配置
+rabbitMq:
+    # 默认的交换机前缀
+    prefix: ${spring.application.name}-
+    # 默认的延迟交换机前缀
+    delay_prefix: ${spring.application.name}-delay-
+    # 默认的队列前缀
+    queue_prefix: ${spring.application.name}-
+    exchange:
+        # 默认的交换机
+        default_exchange_name: ${rabbitMq.prefix}default-dev
+        # 默认的延时交换机
+        default_delay_exchange_name: ${rabbitMq.delay_prefix}default-dev
+    queue:
+        # 查询订单状态队列
+        queue_query_order_name: ${rabbitMq.queue_prefix}queue-query-order-dev
+        # 超时自动关闭订单队列
+        queue_auto_close_order_name: ${rabbitMq.queue_prefix}queue-auto-close-order-dev
+        # 查询退款单状态队列
+        queue_query_refund_name: ${rabbitMq.queue_prefix}queue-query-refund-dev
+
+# 阿里云配置
+aliyun:
+    # oss对象存储
+    oss:
+        # STS服务接入点，例如sts.cn-hangzhou.aliyuncs.com。您可以通过公网或者VPC接入STS服务。
+        endpoint: sts.cn-hangzhou.aliyuncs.com
+        # 访问密钥
+        accessKeyId: xxx
+        accessKeySecret: xx
+        # RAM角色的RamRoleArn
+        roleArn: acs:ram::1570241060691783:role/oss-role
+        # 临时访问凭证的有效时间，单位为秒。最小值为900，最大值以当前角色设定的最大会话时间为准。当前角色最大会话时间取值范围为3600秒~43200秒，默认值为3600秒。
+        # 在上传大文件或者其他较耗时的使用场景中，建议合理设置临时访问凭证的有效时间，确保在完成目标任务前无需反复调用STS服务以获取临时访问凭证。
+        durationSeconds: 3600
+
+# 支付配置
+payConfig:
+    # 自动关闭订单时间。单位秒
+    autoCloseOrderTime: 600
+    # 聚合支付二维码链接前缀
+    qrPayPreUrl: http://43.138.40.139:9091/page/pay/payPre
+    alipay:
+        notifyUrl: http://43.138.40.139:9091/alipay/payNotify
+        isSandBox: true
+    wxpay:
+        notifyUrl: http://43.138.40.139:9091/wxpay/payNotify
+        refundNotifyUrl: http://43.138.40.139:9091/wxpay/refundNotify
+
+# 应用来源平台
+source:
+    gitee:
+        clientId: 0d1b3f6d75fd0fd833aa9e20ae97ea1449b34e6a75a9ec6b8c8161e3b0e15991
+        clientSecret: 39d424af51aac768800cf4d256bb6cb10dfc551bbef3fcc0fe523237cdbe34e7
+        redirectUri: http://43.138.40.139:9098/social-login?source=gitee
+    wechatMini:
+        clientId: wx993fd5fa1dd3123b
+        clientSecret: 66c9075f26e19fc6b7e2ff0b4dfe8685
+
+
+# 对外暴露的指标
+management:
+    endpoints:
+        web:
+            exposure:
+                # 生产环境中，不建议使用 include: "*" 暴露所有端点，应根据实际需求暴露必要的端点，以提高安全性。
+                include: "*"
+    #激活promethues并转换为对应的promethues数据
+    endpoint:
+        prometheus:
+            # 启用 Prometheus 端点，允许将应用的指标数据转换为 Prometheus 可以识别的格式。
+            enabled: true
+        health:
+            # 设置健康检查端点总是显示详细信息，方便监控系统了解应用的健康状态。
+            showDetails: ALWAYS
+    #允许对应的数据指标被导出
+    metrics:
+        export:
+            prometheus:
+                enabled: true
+
+

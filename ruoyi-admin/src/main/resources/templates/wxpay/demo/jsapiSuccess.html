@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" charset="UTF-8" src="https://wx.gtimg.com/pay_h5/goldplan/js/jgoldplan-1.0.0.js"></script>
+    <script th:src="${homeUrl}+'/js/vconsole.min.js'" ></script>
+    <script>
+        var vConsole = new VConsole();
+    </script>
+    <script type="text/javascript">
+        var vConsole = new VConsole();
+        var homeUrl = '[[${homeUrl}]]';
+        var appId = '[[${appid}]]';
+        if (!appId) {
+            alert("appid不存在");
+        }
+        // 响应事件，展示商家小票
+        window.onload=function () {
+            let mchData ={action:'onIframeReady',displayStyle:'SHOW_CUSTOM_PAGE'}
+            let postData = JSON. stringify(mchData)
+            parent.postMessage(postData,'https://payapp.weixin.qq.com')
+        }
+
+        // 返回商家页面
+        function returnMerchantPage() {
+            let mchData ={action:'jumpOut', jumpOutUrl:homeUrl + '/page/wxpay/demo/jsapi?appid=' + appId}
+            let postData = JSON. stringify(mchData)
+            parent.postMessage(postData,'https://payapp.weixin.qq.com')
+        }
+
+    </script>
+</head>
+<body>
+<a  onclick="returnMerchantPage()">返回商家页面</a>
+</body>
+</html>
+
+

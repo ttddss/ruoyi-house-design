@@ -1,0 +1,54 @@
+# Spring配置
+spring:
+  application:
+    name: house-design
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  profiles:
+      active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+
+# MyBatis配置
+#mybatis:
+#  # 搜索指定包别名
+#  typeAliasesPackage: com.ruoyi.**.domain
+#  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+#  mapperLocations: classpath*:mapper/**/*Mapper.xml
+#  # 加载全局的配置文件
+#  configLocation: classpath:mybatis/mybatis-config.xml
+mybatis-plus:
+  type-aliases-package: com.ruoyi.**.domain
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+  global-config:
+    db-config:
+      logic-delete-field: delFlag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: id # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+# PageHelper分页插件
+pagehelper:
+  helperDialect: mysql
+  supportMethodsArguments: true
+  params: count=countSql
+logging:
+  file:
+    path: /app/ziteng/workspace/${spring.application.name}/logs/
+
+
+# 防止XSS攻击
+xss:
+  # 过滤开关
+  enabled: true
+  # 排除链接（多个用逗号分隔）
+  excludes: /system/notice
+  # 匹配链接
+  urlPatterns: /system/*,/monitor/*,/tool/*
